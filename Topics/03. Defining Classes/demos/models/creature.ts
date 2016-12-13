@@ -1,19 +1,37 @@
-export class Creature {
-    public _name: string;
+import { ICanBeHit } from './ICanBeHit';
 
-    constructor(name: string) {
+export abstract class Creature implements ICanBeHit {
+    private _name: string;
+    public damage: number;
+    public health: number;
+
+    constructor(name: string, damage: number, health: number) {
         this.name = name;
+        this.damage = damage;
+        this.health = health;
     }
 
-    public get name() {
-        return this._name
+    public get name(): string {
+        return this._name;
     }
 
-    public set name(name) {
-        this._name = name;
+    public set name(newName: string) {
+        if (Creature.IsNameValid(newName) === false) {
+            throw new Error("Invalid Superhero name");
+        }
+
+        this._name = newName;
     }
 
-    public walk(): void {
-        console.log("I am walking!");
+    public abstract takeHit(damage: number);
+
+    static IsNameValid(name: string): boolean {
+        if (name === null ||
+            name.length < 3 ||
+            name.length > 30) {
+            return false;
+        }
+
+        return true;
     }
 }

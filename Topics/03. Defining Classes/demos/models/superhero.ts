@@ -1,43 +1,39 @@
-import { Creature } from './creature';
-import { Person } from "./person";
+import { Power } from './Power';
 
-import { Alignment } from "./alignment"
+import { ICanBeHit } from './ICanBeHit';
+import { Alignment } from "./Alignment";
 
-export class Superhero extends Person {
-    constructor(name: string, private secretIdentity: string, private alignment: Alignment) {
-        super(name);
+import { Creature } from './Creature'
+
+
+export class Superhero extends Creature {
+    public secretIdentity: string;
+    public powers: Power[];
+
+    constructor(name: string, secretIdentity: string, damage: number, health: number, ...powers: Power[]) {
+        super(name, damage, health);
+        this.secretIdentity = secretIdentity;
+        this.powers = powers;
     }
 
-    hit(creature: Creature) {
-        if (creature === this) {
-            console.log(`[${this.name}]: Yup, I am that studip,hitting myself...`);
-        } else if (creature instanceof Superhero) {
-            let other = <Superhero>creature;
-            if (this.alignment === other.alignment) {
-                if (this.alignment === Alignment.Good) {
-                    console.log(`Just a friendly fight between ${this.name} and ${other.name}`);
-                } else {
-                    console.log(`A fight for power between ${this.name} and ${other.name}`);
-                }
-            } else {
-                console.log(`${this.name} is fighting ${other.name}`);
-            }
-        } else if (creature instanceof Person) {
-            let other = <Person>(creature);
-            console.log(`${other.name} is a collateral damage while ${this.name} fights...`);
-        } else {
-            console.log(`Poor, poor creature ${creature.name} `);
+    usePower(powerName: string, target?: ICanBeHit): string {
+        let power = this.powers.find(p => p.name.toLowerCase() == powerName.toLowerCase());
+        if (!power) {
+            throw new Error(`${this.name} cannot user ${powerName}`);
         }
+        if (target) {
+            target.takeHit(power.damage);
+        }
+
+        return `${this.name} uses ${power.name}`;
     }
 
-    static Superhero 
+    hit(other: ICanBeHit): string {
+        other.takeHit(this.damage);
+        return `${this.name} hits`;
+    }
+
+    takeHit(damage: number) {
+        this.health -= damage;
+    }
 }
-
-let batman = new Superhero("Batman", "Bruce Wayne", Alignment.Good);
-let theJoker = new Superhero("The Joker", "Unknown", Alignment.Evil);
-let lexLutor = new Superhero("Lex Lutor", "Lex Lutor", Alignment.Evil);
-
-batman.hit(batman);
-batman.hit(theJoker);
-theJoker.hit(lexLutor);
-batman.hit(new Person("John"));
