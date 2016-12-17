@@ -1,0 +1,44 @@
+<h1 class="text-center">Top 10 iMBD Movies</h1>
+<div class="form-group" style="margin-left: 100px; width: 80%">
+    <div class="form-group" style="margin-left: 200px; width: 60%">
+        <label for="search">Search</label>
+        <input type="text" class="form-control" #searchinput name="search" (input)="searchinput.value">
+    </div>
+    <form class="form-inline" style="margin-left: 250px">
+        <div class="form-group">
+            <label for="sort" style="display: block">Sort</label>
+            <select type="dropdown" class="form-control" style="width: 250px" #sortinput name="sort" (input)="sortinput.value">
+                <option value="Title">Title</option>
+                <option value="Year">Year</option>
+                <option value="imdbRating">Rating</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="order" style="display: block">Order</label>
+            <select type="dropdown" class="form-control" style="width: 250px" name="order" #orderinput (input)="orderinput.value">
+                 <option value="Ascending">Ascending</option>
+                 <option value="Descending">Descending</option>
+            </select>
+        </div>
+    </form>
+    <br/>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+                <td>
+                    <strong>Poster</strong>
+                </td>
+                <td>
+                    <strong>Title</strong>
+                </td>
+                <td>
+                    <strong>Year</strong>
+                </td>
+                <td>
+                    <strong>imdbRating</strong>
+                </td>
+                <tr mvdb-movie-short *ngFor="let movie of (movies | filterMovies:searchinput.value | sortMoviesBy:sortinput.value:orderinput.value)" [movie]="movie"></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
